@@ -1,0 +1,23 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: csi-vfstr-web
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - NODE_ENV=production
+      - JWT_SECRET=csi_vfstr_hyderabad_secret_key_prod_2026
+      - ADMIN_PASSWORD=csi@vfstr2026
+      - CLIENT_URL=http://localhost:5000
+    volumes:
+      # Persistent storage for uploaded photos and database state
+      - csi_uploads:/app/server/uploads
+      - csi_data:/app/server/data
+
+volumes:
+  csi_uploads:
+  csi_data:
