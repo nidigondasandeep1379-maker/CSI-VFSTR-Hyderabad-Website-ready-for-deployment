@@ -412,62 +412,8 @@
       "photo": "/uploads/WhatsApp_Image_2026-09-15_at_21_59_40-1790155745978-922083584.jpeg",
       "createdAt": "2026-09-23T09:29:06.157Z",
       "updatedAt": "2026-09-23T09:29:06.157Z"
-    },
-    {
-      "id": "e92deb50-078b-4cc5-bc1c-f19702ad70ed",
-      "_id": "e92deb50-078b-4cc5-bc1c-f19702ad70ed",
-      "name": "Dr. V. Baby",
-      "position": "Head of the Department",
-      "department": "Department of CSE",
-      "year": "Faculty",
-      "photo": "/uploads/dr_v_baby.jpg",
-      "createdAt": "2026-09-23T11:05:10.320Z",
-      "updatedAt": "2026-09-23T11:05:10.343Z"
-    },
-    {
-      "id": "e1db252c-192d-4e9d-932d-1c7c319c1e9e",
-      "_id": "e1db252c-192d-4e9d-932d-1c7c319c1e9e",
-      "name": "Dr. C. Kiran Mai",
-      "position": "Faculty Advisor",
-      "department": "CSI Student Branch Chapter",
-      "year": "Faculty",
-      "photo": "/uploads/dr_c_kiran_mai.jpg",
-      "createdAt": "2026-09-23T11:05:10.378Z",
-      "updatedAt": "2026-09-23T11:05:10.378Z"
-    },
-    {
-      "id": "3d073897-cf33-4211-9eb8-019cbc351873",
-      "_id": "3d073897-cf33-4211-9eb8-019cbc351873",
-      "name": "Dr. S. Nagini",
-      "position": "Faculty Advisor",
-      "department": "CSI Student Branch Chapter",
-      "year": "Faculty",
-      "photo": "/uploads/dr_s_nagini.jpg",
-      "createdAt": "2026-09-23T11:05:10.412Z",
-      "updatedAt": "2026-09-23T11:05:10.412Z"
-    },
-    {
-      "id": "97bf83ab-4e7a-44b9-ba73-ce297cf0d919",
-      "_id": "97bf83ab-4e7a-44b9-ba73-ce297cf0d919",
-      "name": "Dr. N. Sandeep Chaitanya",
-      "position": "Faculty Coordinator",
-      "department": "CSI Student Branch Chapter",
-      "year": "Faculty",
-      "photo": "/uploads/dr_n_sandeep_chaitanya.jpg",
-      "createdAt": "2026-09-23T11:05:10.442Z",
-      "updatedAt": "2026-09-23T11:05:10.442Z"
-    },
-    {
-      "id": "0abcb3b1-9068-4973-a39c-7a22202975f3",
-      "_id": "0abcb3b1-9068-4973-a39c-7a22202975f3",
-      "name": "Mr. SK Saddam Hussain",
-      "position": "Faculty Coordinator",
-      "department": "CSI Student Branch Chapter",
-      "year": "Faculty",
-      "photo": "/uploads/mr_sk_saddam_hussain.jpg",
-      "createdAt": "2026-09-23T11:05:10.490Z",
-      "updatedAt": "2026-09-23T11:05:10.490Z"
     }
+    
   ],
   "events": [],
   "gallery": [
