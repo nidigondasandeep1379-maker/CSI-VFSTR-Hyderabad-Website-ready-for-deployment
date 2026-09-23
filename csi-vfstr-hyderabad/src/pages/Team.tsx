@@ -95,7 +95,11 @@ export const Team: React.FC = () => {
       (!p.includes('president') && !p.includes('chair') && !p.includes('secretary') && !p.includes('treasurer') && !p.includes('director'))
     );
   });
-
+ // Main Student Committee (All members excluding faculty)
+  const mainStudentCommittee = studentMembers.filter((m) => {
+    const p = (m.position || '').toLowerCase();
+    return !isFacultyMember(m) && !p.includes('president') && !p.includes('chair') && !p.includes('secretary') && !p.includes('treasurer') && !p.includes('director');
+  });
   // Designing Heads & Media
   const designingHeads = studentMembers.filter((m) => {
     const p = (m.position || '').toLowerCase();
