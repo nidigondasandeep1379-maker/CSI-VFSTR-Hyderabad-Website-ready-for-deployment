@@ -44,7 +44,7 @@ export const Events: React.FC = () => {
     const matchesCategory =
       selectedCategory === 'All' ||
       (selectedCategory === 'Other'
-        ? !['Workshop', 'Hackathon', 'Coding Competition', 'Seminar', 'Webinar', 'Technical Event'].includes(e.category)
+        ? !['Workshop', 'Hackathon', 'Coding Competition', 'Seminar', 'Webinar', 'Technical Event','State level events'].includes(e.category)
         : e.category.toLowerCase() === selectedCategory.toLowerCase());
 
     const matchesStatus =

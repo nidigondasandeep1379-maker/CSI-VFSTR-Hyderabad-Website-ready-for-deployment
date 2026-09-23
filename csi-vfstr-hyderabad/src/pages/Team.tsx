@@ -42,6 +42,7 @@ export const Team: React.FC = () => {
       pos.includes('head of the department') ||
       pos.includes('hod') ||
       pos.includes('dean') ||
+      pos.includes('director') ||
       yr.includes('faculty')
     );
   };
