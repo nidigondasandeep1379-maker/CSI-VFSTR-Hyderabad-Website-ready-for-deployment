@@ -5,26 +5,22 @@ import {
   Users,
   GraduationCap,
   Linkedin,
-  Github,
-  Mail,
-  Phone,
+  ArrowLeft,
   Search,
-  Award,
-  Sparkles,
-  BookOpen
 } from 'lucide-react';
 
 export const Team: React.FC = () => {
   const [team, setTeam] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
-  const [teamScope, setTeamScope] = useState<'students' | 'faculty'>('students');
-  const [filterCategory, setFilterCategory] = useState<string>('All');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [mainTab, setMainTab] = useState<'faculty' | 'student'>('faculty');
+  const [studentSubTab, setStudentSubTab] = useState<'managing' | 'action' | 'all'>('action');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    teamService.getAll()
+    teamService
+      .getAll()
       .then((data) => setTeam(data))
-      .catch((err) => console.error(err))
+      .catch((err) => console.error('Failed to load team data:', err))
       .finally(() => setLoading(false));
   }, []);
 
@@ -32,291 +28,381 @@ export const Team: React.FC = () => {
   const isFacultyMember = (member: TeamMember) => {
     const pos = (member.position || '').toLowerCase();
     const yr = (member.year || '').toLowerCase();
+    const name = (member.name || '').toLowerCase();
     return (
+      name.startsWith('dr.') ||
+      name.startsWith('mr.') ||
+      name.startsWith('ms.') ||
+      name.startsWith('mrs.') ||
       pos.includes('faculty') ||
       pos.includes('counselor') ||
       pos.includes('advisor') ||
       pos.includes('mentor') ||
       pos.includes('professor') ||
+      pos.includes('head of the department') ||
       pos.includes('hod') ||
       pos.includes('dean') ||
       yr.includes('faculty')
     );
   };
 
-  // Helper to categorize student positions accurately
-  const getCategoryForPosition = (position: string = '') => {
+  // Helper to prioritize / sort members
+  const getRolePriority = (position = '') => {
     const p = position.toLowerCase();
-    if (p.includes('president') || p.includes('secretary') || p.includes('treasurer') || p.includes('chair')) {
-      return 'Leadership';
-    }
-    if (p.includes('event')) {
-      return 'Event Coordinators';
-    }
-    if (p.includes('committee') || p.includes('executive')) {
-      return 'Executive Committee';
-    }
-    if (p.includes('media') || p.includes('outreach') || p.includes('pr')) {
-      return 'Media & Outreach';
-    }
-    if (p.includes('volunteer')) {
-      return 'Student Volunteers';
-    }
-    return 'Core Team';
+    if (p.includes('head of the department') || p.includes('hod')) return 1;
+    if (p.includes('faculty advisor')) return 2;
+    if (p.includes('faculty coordinator')) return 3;
+    if (p.includes('faculty') || p.includes('counselor')) return 4;
+    if (p.includes('chairperson') || p.includes('president') || p.includes('chair')) return 5;
+    if (p.includes('vice chairperson') || p.includes('vice president') || p.includes('vice chair')) return 6;
+    if (p.includes('secretary') && !p.includes('joint')) return 7;
+    if (p.includes('joint secretary')) return 8;
+    if (p.includes('treasurer') && !p.includes('joint')) return 9;
+    if (p.includes('joint treasurer')) return 10;
+    if (p.includes('director') || p.includes('deputy director')) return 11;
+    if (p.includes('event')) return 12;
+    if (p.includes('design') || p.includes('creative') || p.includes('media') || p.includes('pr')) return 13;
+    if (p.includes('executive')) return 14;
+    if (p.includes('volunteer')) return 15;
+    return 20;
   };
 
-  // Partition members
-  const facultyMembers = team.filter(isFacultyMember);
-  const studentMembers = team.filter((m) => !isFacultyMember(m));
+  const facultyMembers = team.filter(isFacultyMember).sort((a, b) => getRolePriority(a.position) - getRolePriority(b.position));
+  const studentMembers = team.filter((m) => !isFacultyMember(m)).sort((a, b) => getRolePriority(a.position) - getRolePriority(b.position));
 
-  const studentCategories = [
-    'All',
-    'Leadership',
-    'Event Coordinators',
-    'Executive Committee',
-    'Media & Outreach',
-    'Student Volunteers'
-  ];
-
-  // Active list based on selected scope
-  const activeScopeMembers = teamScope === 'faculty' ? facultyMembers : studentMembers;
-
-  // Filter and search
-  const filteredTeam = activeScopeMembers.filter((member) => {
-    const matchesCategory =
-      teamScope === 'faculty' ||
-      filterCategory === 'All' ||
-      getCategoryForPosition(member.position) === filterCategory;
-
-    const query = searchQuery.toLowerCase();
-    const matchesSearch =
-      (member.name || '').toLowerCase().includes(query) ||
-      (member.position || '').toLowerCase().includes(query) ||
-      (member.department || '').toLowerCase().includes(query);
-
-    return matchesCategory && matchesSearch;
+  // Managing Committee (Leadership: President, VP, Secretary, Joint Secretary, Treasurer, Joint Treasurer, Directors)
+  const managingCommittee = studentMembers.filter((m) => {
+    const p = (m.position || '').toLowerCase();
+    return (
+      p.includes('president') ||
+      p.includes('chair') ||
+      p.includes('secretary') ||
+      p.includes('treasurer') ||
+      p.includes('director')
+    );
   });
 
+  // Action Committee (Event Coordinators, Executive Committee, Designing Heads / Media, Volunteers)
+  const actionCommittee = studentMembers.filter((m) => {
+    const p = (m.position || '').toLowerCase();
+    return (
+      p.includes('event') ||
+      p.includes('committee') ||
+      p.includes('executive') ||
+      p.includes('design') ||
+      p.includes('media') ||
+      p.includes('volunteer') ||
+      (!p.includes('president') && !p.includes('chair') && !p.includes('secretary') && !p.includes('treasurer') && !p.includes('director'))
+    );
+  });
+
+  // Designing Heads & Media
+  const designingHeads = studentMembers.filter((m) => {
+    const p = (m.position || '').toLowerCase();
+    return p.includes('design') || p.includes('media') || p.includes('creative') || p.includes('pr');
+  });
+
+  // Event Coordinators
+  const eventCoordinators = studentMembers.filter((m) => {
+    const p = (m.position || '').toLowerCase();
+    return p.includes('event');
+  });
+
+  // Executive Committee
+  const executiveCommittee = studentMembers.filter((m) => {
+    const p = (m.position || '').toLowerCase();
+    return p.includes('executive') || p.includes('committee');
+  });
+
+  // Student Volunteers
+  const studentVolunteers = studentMembers.filter((m) => {
+    const p = (m.position || '').toLowerCase();
+    return p.includes('volunteer');
+  });
+
+  // Active list based on selections
+  let activeMembers: TeamMember[] = [];
+  if (mainTab === 'faculty') {
+    activeMembers = facultyMembers;
+  } else if (studentSubTab === 'managing') {
+    activeMembers = managingCommittee.length > 0 ? managingCommittee : studentMembers;
+  } else if (studentSubTab === 'action') {
+    activeMembers = actionCommittee.length > 0 ? actionCommittee : studentMembers;
+  } else {
+    activeMembers = studentMembers;
+  }
+
+  // Filter with search query
+  if (searchQuery.trim()) {
+    const q = searchQuery.toLowerCase();
+    activeMembers = activeMembers.filter(
+      (m) =>
+        (m.name || '').toLowerCase().includes(q) ||
+        (m.position || '').toLowerCase().includes(q) ||
+        (m.department || '').toLowerCase().includes(q)
+    );
+  }
+
+  // Card component matching reference design
+  const renderMemberCard = (member: TeamMember) => {
+    return (
+      <div key={member.id || member._id || member.name} className="flex flex-col items-center text-center group">
+        {/* Circular Avatar Container */}
+        <div className="relative mb-3">
+          <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden border-4 border-white shadow-xl ring-1 ring-slate-200/80 bg-slate-100 flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:shadow-2xl">
+            {member.photo ? (
+              <img
+                src={member.photo}
+                alt={member.name}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                    member.name
+                  )}&background=0e1b4d&color=fff&size=200`;
+                }}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#0e1b4d] to-[#1d4ed8] text-white font-bold text-2xl sm:text-3xl">
+                {member.name
+                  .split(' ')
+                  .map((n) => n[0])
+                  .slice(0, 2)
+                  .join('')
+                  .toUpperCase()}
+              </div>
+            )}
+          </div>
+
+          {/* Blue LinkedIn circular badge at bottom-right of photo */}
+          {member.linkedin ? (
+            <a
+              href={member.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${member.name} LinkedIn Profile`}
+              className="absolute bottom-1 right-2 w-7 h-7 bg-[#0077b5] text-white rounded-full flex items-center justify-center shadow-md hover:scale-110 hover:bg-[#005f93] transition-all"
+            >
+              <Linkedin className="w-3.5 h-3.5 fill-current" />
+            </a>
+          ) : (
+            /* Subtle decorative LinkedIn icon when active on council */
+            <div className="absolute bottom-1 right-2 w-7 h-7 bg-[#0077b5] text-white rounded-full flex items-center justify-center shadow-md opacity-90 group-hover:scale-110 transition-transform">
+              <Linkedin className="w-3.5 h-3.5 fill-current" />
+            </div>
+          )}
+        </div>
+
+        {/* Member Name */}
+        <h3 className="font-bold text-slate-900 text-sm sm:text-base tracking-tight leading-tight mt-1 group-hover:text-blue-600 transition-colors">
+          {member.name}
+        </h3>
+
+        {/* Member Position (Bold Blue) */}
+        <p className="text-blue-700 font-semibold text-xs sm:text-sm mt-1 leading-snug">
+          {member.position}
+        </p>
+
+        {/* Department / Chapter Sub-label */}
+        <p className="text-slate-500 text-[11px] sm:text-xs mt-0.5 leading-snug">
+          {member.department || 'CSI Student Branch Chapter'}
+        </p>
+      </div>
+    );
+  };
+
   return (
-    <div className="bg-slate-50 py-12 min-h-[85vh]">
-      {/* Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
-        <div className="text-center max-w-3xl mx-auto">
-          <span className="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-3.5 py-1 rounded-full border border-blue-200">
-            Chapter Governance & Council
-          </span>
-          <h1 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-slate-900">
-            CSI Chapter Team
+    <div className="bg-white min-h-[90vh] py-12 sm:py-16">
+      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Top Breadcrumb / Back Link (shown when in sub-committees) */}
+        {mainTab === 'student' && (
+          <div className="mb-4">
+            <button
+              onClick={() => {
+                setMainTab('faculty');
+              }}
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Team</span>
+            </button>
+          </div>
+        )}
+
+        {/* Page Title & Subtitle */}
+        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-sans font-bold text-slate-900 tracking-tight">
+            Our Team
           </h1>
-          <p className="mt-3 text-slate-600 text-sm sm:text-base">
-            Academic guidance from dedicated faculty mentors combined with an energetic student leadership driving technical innovation at VFSTR Hyderabad.
+          <p className="text-slate-600 text-xs sm:text-sm md:text-base mt-2 leading-relaxed">
+            Meet the dedicated team of professionals who guide and support our community.
           </p>
         </div>
 
-        {/* Top Segmented Scope Selector: Students vs Faculty */}
-        <div className="mt-8 flex items-center justify-center">
-          <div className="inline-flex p-1.5 rounded-2xl bg-white border border-slate-200 shadow-sm gap-1">
-            <button
-              onClick={() => {
-                setTeamScope('students');
-                setFilterCategory('All');
-              }}
-              className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 ${
-                teamScope === 'students'
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              <Users className="w-4 h-4" />
-              <span>Student Council ({studentMembers.length})</span>
-            </button>
+        {/* Navigation / Tab Controls */}
+        <div className="flex flex-col items-center justify-center gap-3 mb-12 sm:mb-16">
+          {/* Main Tabs Row */}
+          {mainTab === 'faculty' ? (
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <button
+                onClick={() => setMainTab('faculty')}
+                className="px-5 py-2 rounded-md bg-blue-600 text-white font-medium text-xs sm:text-sm shadow-sm flex items-center gap-2 transition-all hover:bg-blue-700"
+              >
+                <Users className="w-4 h-4" />
+                <span>Faculty Coordinators</span>
+              </button>
 
-            <button
-              onClick={() => {
-                setTeamScope('faculty');
-                setFilterCategory('All');
-              }}
-              className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 ${
-                teamScope === 'faculty'
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              <GraduationCap className="w-4 h-4" />
-              <span>Faculty Advisors & Coordinators</span>
-            </button>
+              <button
+                onClick={() => {
+                  setMainTab('student');
+                  setStudentSubTab('action');
+                }}
+                className="px-5 py-2 rounded-md bg-white border border-blue-500/40 text-blue-600 hover:bg-blue-50/50 font-medium text-xs sm:text-sm flex items-center gap-2 transition-all"
+              >
+                <GraduationCap className="w-4 h-4" />
+                <span>Student Committee</span>
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <button
+                onClick={() => setStudentSubTab('managing')}
+                className={`px-5 py-2 rounded-md font-medium text-xs sm:text-sm flex items-center gap-2 transition-all ${
+                  studentSubTab === 'managing'
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'bg-white border border-blue-500/40 text-blue-600 hover:bg-blue-50/50'
+                }`}
+              >
+                <GraduationCap className="w-4 h-4" />
+                <span>Managing Committee (2026-27)</span>
+              </button>
+
+              <button
+                onClick={() => setStudentSubTab('action')}
+                className={`px-5 py-2 rounded-md font-medium text-xs sm:text-sm flex items-center gap-2 transition-all ${
+                  studentSubTab === 'action'
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'bg-white border border-blue-500/40 text-blue-600 hover:bg-blue-50/50'
+                }`}
+              >
+                <Users className="w-4 h-4" />
+                <span>Action Committee (2026-27)</span>
+              </button>
+            </div>
+          )}
+
+          {/* Sub Row: Hyderabad Chapter Council / Previous Committee Members */}
+          <div className="flex items-center justify-center">
+            {mainTab === 'faculty' ? (
+              <button
+                onClick={() => {
+                  setMainTab('student');
+                  setStudentSubTab('all');
+                }}
+                className="px-4 py-1.5 rounded-md bg-white border border-blue-400/40 hover:border-blue-600 text-blue-600 hover:bg-blue-50/50 font-medium text-xs flex items-center gap-2 transition-all shadow-2xs"
+              >
+                <Users className="w-3.5 h-3.5" />
+                <span>Hyderabad Chapter Student Council (2025-2027)</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => setStudentSubTab('all')}
+                className="px-4 py-1.5 rounded-md bg-white border border-blue-400/40 hover:border-blue-600 text-blue-600 hover:bg-blue-50/50 font-medium text-xs flex items-center gap-2 transition-all shadow-2xs"
+              >
+                <Users className="w-3.5 h-3.5" />
+                <span>Previous Committee Members</span>
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Sub-Filters and Search Bar for Students */}
-        {teamScope === 'students' && studentMembers.length > 0 && (
-          <div className="mt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            {/* Category pills */}
-            <div className="flex flex-wrap gap-1.5 sm:gap-2">
-              {studentCategories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setFilterCategory(cat)}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                    filterCategory === cat
-                      ? 'bg-slate-900 text-white shadow-sm'
-                      : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-
-            {/* Search Box */}
-            <div className="relative w-full md:w-64">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search student, role..."
-                className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-              />
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Main Content Area */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Loading Spinner */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-              <div key={n} className="h-72 rounded-2xl bg-white border border-slate-200 animate-pulse" />
-            ))}
-          </div>
-        ) : teamScope === 'faculty' && facultyMembers.length === 0 ? (
-          /* Dedicated Faculty Advisory Presentation when no individual faculty rows are in CSV */
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-sm">
-              <div className="flex flex-col md:flex-row items-center gap-8">
-                <div className="w-32 h-32 rounded-3xl bg-gradient-to-tr from-blue-700 via-indigo-700 to-navy-900 text-white flex items-center justify-center shrink-0 shadow-xl shadow-blue-900/20">
-                  <GraduationCap className="w-16 h-16 text-cyan-300" />
-                </div>
-                <div className="text-center md:text-left space-y-3">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold border border-blue-200">
-                    <Award className="w-3.5 h-3.5" />
-                    <span>Faculty Branch Advisory</span>
-                  </div>
-                  <h3 className="text-2xl font-display font-bold text-slate-900">
-                    Faculty Branch Counselor & Chapter Mentorship
-                  </h3>
-                  <p className="text-sm text-slate-600 leading-relaxed">
-                    The Computer Society of India Student Chapter at VFSTR Hyderabad functions under the guidance of the <strong>Department of Computer Science and Engineering (CSE)</strong> faculty coordinators and branch counselors, fostering technical symposiums, research hackathons, and professional development.
-                  </p>
-                  <div className="pt-2 flex flex-wrap gap-4 text-xs text-slate-500 font-medium">
-                    <span className="flex items-center gap-1.5">
-                      <BookOpen className="w-4 h-4 text-blue-600" />
-                      Department of CSE
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <Sparkles className="w-4 h-4 text-amber-500" />
-                      VFSTR Hyderabad Campus
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : filteredTeam.length === 0 ? (
-          <div className="p-12 text-center bg-white rounded-2xl border border-slate-200">
-            <Users className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-            <h4 className="text-base font-bold text-slate-800">No members match your filter</h4>
-            <p className="text-xs text-slate-500 mt-1">Try selecting 'All' or clearing your search term.</p>
+          <div className="py-20 flex flex-col items-center justify-center">
+            <div className="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-3" />
+            <p className="text-slate-500 text-xs font-medium">Fetching team roster from MongoDB Atlas...</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredTeam.map((member) => (
-              <div
-                key={member.id}
-                className="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center group relative overflow-hidden"
-              >
-                {/* Photo */}
-                <div className="relative w-32 h-32 rounded-2xl overflow-hidden mb-4 bg-slate-100 border-2 border-slate-100 group-hover:border-blue-500/30 transition-colors shadow-inner">
-                  {member.photo ? (
-                    <img
-                      src={member.photo}
-                      alt={member.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-tr from-navy-900 to-blue-700 text-white font-display font-bold text-2xl">
-                      {member.name.slice(0, 2).toUpperCase()}
-                    </div>
-                  )}
+          <div>
+            {/* View 1: Faculty Coordinators */}
+            {mainTab === 'faculty' && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 sm:gap-10 lg:gap-8 justify-center max-w-6xl mx-auto">
+                {facultyMembers.map(renderMemberCard)}
+              </div>
+            )}
+
+            {/* View 2: Student Committee (Action Committee / Managing Committee) */}
+            {mainTab === 'student' && (
+              <div className="space-y-16">
+                {/* Primary Row of Active Committee Members */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 sm:gap-10 lg:gap-8 justify-center max-w-6xl mx-auto">
+                  {activeMembers.slice(0, 5).map(renderMemberCard)}
                 </div>
 
-                {/* Member Name */}
-                <h3 className="font-display font-bold text-base text-slate-900 group-hover:text-blue-600 transition-colors">
-                  {member.name}
-                </h3>
+                {/* Sub-section: Designing Heads (matching screenshot) */}
+                {designingHeads.length > 0 && (
+                  <div className="pt-6">
+                    <div className="text-center mb-8">
+                      <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                        Designing Heads
+                      </h2>
+                      <div className="h-0.5 w-12 bg-blue-600 mx-auto mt-1" />
+                    </div>
 
-                {/* Position */}
-                <p className="text-xs font-semibold text-blue-600 mt-1">
-                  {member.position}
-                </p>
-
-                {/* Department / Year (Only if exists) */}
-                {(member.department || member.year) && (
-                  <p className="text-xs text-slate-500 mt-1.5 font-medium">
-                    {[member.department, member.year].filter(Boolean).join(' • ')}
-                  </p>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 sm:gap-10 lg:gap-8 justify-center max-w-6xl mx-auto">
+                      {designingHeads.map(renderMemberCard)}
+                    </div>
+                  </div>
                 )}
 
-                {/* Social Links (Only display fields that actually exist) */}
-                <div className="mt-5 pt-4 border-t border-slate-100 w-full flex items-center justify-center gap-3">
-                  {member.linkedin && (
-                    <a
-                      href={member.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                      title="LinkedIn Profile"
-                    >
-                      <Linkedin className="w-4 h-4" />
-                    </a>
-                  )}
+                {/* Sub-section: Event Coordinators */}
+                {eventCoordinators.length > 0 && (
+                  <div className="pt-6">
+                    <div className="text-center mb-8">
+                      <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                        Event Coordinators
+                      </h2>
+                      <div className="h-0.5 w-12 bg-blue-600 mx-auto mt-1" />
+                    </div>
 
-                  {member.github && (
-                    <a
-                      href={member.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 rounded-lg text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors"
-                      title="GitHub Profile"
-                    >
-                      <Github className="w-4 h-4" />
-                    </a>
-                  )}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-10 justify-center max-w-5xl mx-auto">
+                      {eventCoordinators.map(renderMemberCard)}
+                    </div>
+                  </div>
+                )}
 
-                  {member.email && (
-                    <a
-                      href={`mailto:${member.email}`}
-                      className="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                      title="Email Member"
-                    >
-                      <Mail className="w-4 h-4" />
-                    </a>
-                  )}
+                {/* Sub-section: Executive Committee */}
+                {executiveCommittee.length > 0 && (
+                  <div className="pt-6">
+                    <div className="text-center mb-8">
+                      <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                        Executive Committee
+                      </h2>
+                      <div className="h-0.5 w-12 bg-blue-600 mx-auto mt-1" />
+                    </div>
 
-                  {member.phone && (
-                    <a
-                      href={`tel:${member.phone}`}
-                      className="p-2 rounded-lg text-slate-400 hover:text-teal-600 hover:bg-teal-50 transition-colors"
-                      title="Phone"
-                    >
-                      <Phone className="w-4 h-4" />
-                    </a>
-                  )}
-                </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 sm:gap-10 lg:gap-8 justify-center max-w-6xl mx-auto">
+                      {executiveCommittee.map(renderMemberCard)}
+                    </div>
+                  </div>
+                )}
+
+                {/* Sub-section: Student Volunteers */}
+                {studentVolunteers.length > 0 && (
+                  <div className="pt-6">
+                    <div className="text-center mb-8">
+                      <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                        Student Volunteers
+                      </h2>
+                      <div className="h-0.5 w-12 bg-blue-600 mx-auto mt-1" />
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 sm:gap-10 justify-center max-w-6xl mx-auto">
+                      {studentVolunteers.map(renderMemberCard)}
+                    </div>
+                  </div>
+                )}
               </div>
-            ))}
+            )}
           </div>
         )}
       </div>
