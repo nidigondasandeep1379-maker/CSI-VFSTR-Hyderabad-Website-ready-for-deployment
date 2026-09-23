@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../../services/api';
-import { ShieldCheck, Lock, User, ArrowRight, Sparkles, Key } from 'lucide-react';
+import { Lock, User, ArrowRight } from 'lucide-react';
 
 export const AdminLogin: React.FC = () => {
-  const [username, setUsername] = useState('admin');
-  const [password, setPassword] = useState('csi@vfstr2026');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const navigate = useNavigate();
@@ -65,7 +65,8 @@ export const AdminLogin: React.FC = () => {
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="admin"
+                  placeholder="Enter administrator username"
+                  autoComplete="username"
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-navy-800 border border-navy-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                 />
               </div>
@@ -82,18 +83,11 @@ export const AdminLogin: React.FC = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="Enter password"
+                  autoComplete="current-password"
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-navy-800 border border-navy-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                 />
               </div>
-            </div>
-
-            {/* Quick credentials helper notice */}
-            <div className="p-3 rounded-xl bg-cyan-950/40 border border-cyan-500/20 text-[11px] text-cyan-300 flex items-start gap-2">
-              <Key className="w-3.5 h-3.5 shrink-0 mt-0.5 text-cyan-400" />
-              <span>
-                Default credentials prefilled: User <code className="text-white font-mono">admin</code> / Pass <code className="text-white font-mono">csi@vfstr2026</code>
-              </span>
             </div>
 
             <button

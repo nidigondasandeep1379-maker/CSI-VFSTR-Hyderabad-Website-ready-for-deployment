@@ -42,7 +42,7 @@ export const PublicLayout: React.FC = () => {
     <SettingsContext.Provider value={{ settings, loading, refreshSettings: fetchSettings }}>
       <div className="min-h-screen flex flex-col bg-slate-50">
         <Navbar />
-        <main className="flex-grow pt-16">
+        <main className="flex-grow pt-[64px] sm:pt-[72px]">
           <Outlet />
         </main>
         <Footer settings={settings || undefined} />

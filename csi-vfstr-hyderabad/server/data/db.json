@@ -6,9 +6,10 @@
       "username": "admin",
       "name": "VFSTR CSI Administrator",
       "email": "admin@csivfstr.org",
-      "passwordHash": "$2a$10$THBe3m7Uvub.iOIrQGF2pebigVvspPyfyFGM.N27GKk8qZ94sXfxS",
+      "passwordHash": "$2a$10$sh.lJTtNx1NlWjfmipBOhuo52jn59VIUKT.BI6SSvqWbbbU4Biht.",
       "createdAt": "2026-09-18T17:25:14.217Z",
-      "updatedAt": "2026-09-18T17:25:14.223Z"
+      "updatedAt": "2026-09-22T07:05:45.755Z",
+      "passwordChangedAt": "2026-09-22T07:05:45.752Z"
     }
   ],
   "team": [
@@ -27,22 +28,6 @@
       "phone": "",
       "createdAt": "2026-09-18T18:17:07.659Z",
       "updatedAt": "2026-09-18T18:21:54.132Z"
-    },
-    {
-      "id": "cb51fd3a-15ec-4524-8a4a-ed22949203be",
-      "_id": "cb51fd3a-15ec-4524-8a4a-ed22949203be",
-      "name": "DHANVI MALPANI",
-      "position": "Vice President",
-      "department": "CSE ",
-      "year": "B.Tech",
-      "rollNumber": "",
-      "email": "",
-      "linkedin": "",
-      "github": "",
-      "photo": "/uploads/WhatsApp_Image_2026-09-15_at_21_59_40-1789755950753-450808229.jpeg",
-      "phone": "",
-      "createdAt": "2026-09-18T18:17:07.660Z",
-      "updatedAt": "2026-09-18T18:25:50.771Z"
     },
     {
       "id": "f62411a7-f4a0-4470-b80e-27e7496109a7",
@@ -411,6 +396,22 @@
       "phone": "",
       "createdAt": "2026-09-18T18:17:07.660Z",
       "updatedAt": "2026-09-18T18:32:14.292Z"
+    },
+    {
+      "id": "036f0eba-ebd2-418b-abd4-f773ae374741",
+      "_id": "036f0eba-ebd2-418b-abd4-f773ae374741",
+      "name": "DHANVI MALPANI",
+      "position": "VICE PRESIDENT",
+      "department": "CSE",
+      "year": "3rd",
+      "rollNumber": "",
+      "email": "",
+      "linkedin": "",
+      "github": "",
+      "phone": "",
+      "photo": "/uploads/WhatsApp_Image_2026-09-15_at_21_59_40-1790155745978-922083584.jpeg",
+      "createdAt": "2026-09-23T09:29:06.157Z",
+      "updatedAt": "2026-09-23T09:29:06.157Z"
     }
   ],
   "events": [],
@@ -457,22 +458,24 @@
     "vision": "Promote technological awareness, innovation, leadership, and collaborative learning among students.",
     "mission": "Provide students with opportunities to develop technical skills, participate in events, work on projects, interact with industry, and build a strong technology community.",
     "stats": {
-      "members": 0,
+      "members": 95,
       "events": 0,
       "workshops": 0,
       "projects": 0
     },
     "contact": {
-      "address": "Vignan's Foundation for Science, Technology and Research (VFSTR), Hyderabad Campus, Telangana, India",
+      "address": "Vignan's Foundation for Science, Technology and Research (VFSTR), Hyderabad Campus, Deshmukhi, Telangana 508284, India",
       "email": "csi@vfstrhyd.ac.in",
       "phone": "+91 80080 00000",
-      "mapEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.54578783454!2d78.3308!3d17.3850!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDIzJzA2LjAiTiA3OMKwMTknNTEuMCJF!5e0!3m2!1sen!2sin!4v1600000000000",
+      "mapEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3808.225134706917!2d78.7143697!3d17.3425151!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb0b001c75ae6b%3A0xc419a613794f4d3e!2sVignan%20University!5e0!3m2!1sen!2sin!4v1710000000000!5m2!1sen!2sin",
+      "mapDirectUrl": "https://www.google.com/maps/place/Vignan+University/@17.3421686,78.7157544,18.53z/data=!4m6!3m5!1s0x3bcb0b001c75ae6b:0xc419a613794f4d3e!8m2!3d17.3425151!4d78.7165579!16s%2Fg%2F11y5_pf7ww",
       "socialLinks": {
         "linkedin": "https://www.linkedin.com/company/csi-india",
         "github": "https://github.com",
         "instagram": "https://www.instagram.com",
         "youtube": "https://www.youtube.com"
       }
-    }
+    },
+    "updatedAt": "2026-09-22T07:06:53.512Z"
   }
 }

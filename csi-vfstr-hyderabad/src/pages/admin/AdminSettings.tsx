@@ -374,6 +374,39 @@ export const AdminSettings: React.FC = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">Google Maps Embed URL (iframe src)</label>
+              <input
+                type="url"
+                value={settings.contact?.mapEmbedUrl || ''}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    contact: { ...settings.contact, mapEmbedUrl: e.target.value }
+                  })
+                }
+                placeholder="https://www.google.com/maps/embed?pb=..."
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">Google Maps Direct Place Link (Open in Maps)</label>
+              <input
+                type="url"
+                value={settings.contact?.mapDirectUrl || ''}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    contact: { ...settings.contact, mapDirectUrl: e.target.value }
+                  })
+                }
+                placeholder="https://www.google.com/maps/place/..."
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">LinkedIn URL</label>
               <input
                 type="url"

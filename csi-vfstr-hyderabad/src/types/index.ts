@@ -141,6 +141,7 @@ export interface WebsiteSettings {
     email: string;
     phone: string;
     mapEmbedUrl?: string;
+    mapDirectUrl?: string;
     socialLinks: {
       linkedin?: string;
       github?: string;

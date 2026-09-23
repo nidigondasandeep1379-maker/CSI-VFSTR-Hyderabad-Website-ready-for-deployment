@@ -10,7 +10,7 @@ interface FooterProps {
 export const Footer: React.FC<FooterProps> = ({ settings }) => {
   const currentYear = 2026;
 
-  const address = settings?.contact?.address || "Vignan's Foundation for Science, Technology and Research (VFSTR), Hyderabad Campus, Telangana, India";
+  const address = settings?.contact?.address || "Vignan's Foundation for Science, Technology and Research (VFSTR), Hyderabad Campus, Deshmukhi, Telangana 508284, India";
   const email = settings?.contact?.email || "csi@vfstrhyd.ac.in";
   const phone = settings?.contact?.phone || "+91 80080 00000";
   const socialLinks = settings?.contact?.socialLinks;

@@ -41,10 +41,11 @@ const initialSchema = {
       projects: 0
     },
     contact: {
-      address: "Vignan's Foundation for Science, Technology and Research (VFSTR), Hyderabad Campus, Telangana, India",
+      address: "Vignan's Foundation for Science, Technology and Research (VFSTR), Hyderabad Campus, Deshmukhi, Telangana 508284, India",
       email: "csi@vfstrhyd.ac.in",
       phone: "+91 80080 00000",
-      mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.54578783454!2d78.3308!3d17.3850!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDIzJzA2LjAiTiA3OMKwMTknNTEuMCJF!5e0!3m2!1sen!2sin!4v1600000000000",
+      mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3808.225134706917!2d78.7143697!3d17.3425151!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb0b001c75ae6b%3A0xc419a613794f4d3e!2sVignan%20University!5e0!3m2!1sen!2sin!4v1710000000000!5m2!1sen!2sin",
+      mapDirectUrl: "https://www.google.com/maps/place/Vignan+University/@17.3421686,78.7157544,18.53z/data=!4m6!3m5!1s0x3bcb0b001c75ae6b:0xc419a613794f4d3e!8m2!3d17.3425151!4d78.7165579!16s%2Fg%2F11y5_pf7ww",
       socialLinks: {
         linkedin: "https://www.linkedin.com/company/csi-india",
         github: "https://github.com",

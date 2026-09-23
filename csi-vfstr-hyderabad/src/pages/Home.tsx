@@ -15,8 +15,8 @@ export const Home: React.FC = () => {
 
   return (
     <div>
-      <AnnouncementsTicker />
       <Hero settings={settings} />
+      <AnnouncementsTicker />
       <VisionMission settings={settings} />
       <Stats settings={settings} />
       <AboutSection settings={settings} />

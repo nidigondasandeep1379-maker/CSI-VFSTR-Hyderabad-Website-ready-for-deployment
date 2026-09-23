@@ -11,7 +11,8 @@ import {
   Instagram,
   Youtube,
   CheckCircle2,
-  Building
+  Building,
+  ExternalLink
 } from 'lucide-react';
 
 export const Contact: React.FC = () => {
@@ -30,11 +31,16 @@ export const Contact: React.FC = () => {
 
   const address =
     settings?.contact?.address ||
-    "Vignan's Foundation for Science, Technology and Research (VFSTR), Hyderabad Campus, Telangana, India";
+    "Vignan's Foundation for Science, Technology and Research (VFSTR), Hyderabad Campus, Deshmukhi, Telangana 508284, India";
   const email = settings?.contact?.email || 'csi@vfstrhyd.ac.in';
   const phone = settings?.contact?.phone || '+91 80080 00000';
   const socialLinks = settings?.contact?.socialLinks;
-  const mapEmbedUrl = settings?.contact?.mapEmbedUrl;
+  const mapEmbedUrl =
+    settings?.contact?.mapEmbedUrl ||
+    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3808.225134706917!2d78.7143697!3d17.3425151!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb0b001c75ae6b%3A0xc419a613794f4d3e!2sVignan%20University!5e0!3m2!1sen!2sin!4v1710000000000!5m2!1sen!2sin';
+  const mapDirectUrl =
+    settings?.contact?.mapDirectUrl ||
+    'https://www.google.com/maps/place/Vignan+University/@17.3421686,78.7157544,18.53z/data=!4m6!3m5!1s0x3bcb0b001c75ae6b:0xc419a613794f4d3e!8m2!3d17.3425151!4d78.7165579!16s%2Fg%2F11y5_pf7ww';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -302,18 +308,36 @@ export const Contact: React.FC = () => {
         {/* Embedded Campus Location Map */}
         {mapEmbedUrl && (
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
-            <h3 className="text-lg font-display font-bold text-slate-900 mb-4 flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-blue-600" />
-              <span>Campus Map Location</span>
-            </h3>
-            <div className="w-full h-80 rounded-2xl overflow-hidden border border-slate-200">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+              <div>
+                <h3 className="text-lg font-display font-bold text-slate-900 flex items-center gap-2">
+                  <MapPin className="w-5 h-5 text-blue-600" />
+                  <span>Campus Map Location</span>
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Vignan University (VFSTR), Hyderabad Campus, Deshmukhi
+                </p>
+              </div>
+
+              <a
+                href={mapDirectUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold transition-colors border border-blue-200 shadow-sm w-fit"
+              >
+                <span>Open in Google Maps</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
+
+            <div className="w-full h-80 sm:h-96 rounded-2xl overflow-hidden border border-slate-200 shadow-inner">
               <iframe
                 title="VFSTR Hyderabad Campus Map"
                 src={mapEmbedUrl}
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
-                allowFullScreen={false}
+                allowFullScreen={true}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />

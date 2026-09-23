@@ -1,15 +1,21 @@
-import 'dotenv/config';
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
+import dotenv from 'dotenv';
 import path from 'path';
-import fs from 'fs';
 import { fileURLToPath } from 'url';
-import apiRouter from './routes/api.js';
-import { initializeDefaultAdmin } from './controllers/authController.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Explicitly load .env from server dir or root dir
+dotenv.config({ path: path.resolve(__dirname, '.env') });
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import fs from 'fs';
+import apiRouter from './routes/api.js';
+import { initializeDefaultAdmin } from './controllers/authController.js';
+import { connectDatabase, isMongoConnected } from './config/database.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -67,6 +73,8 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     environment: process.env.NODE_ENV || 'development',
+    mongoDb: isMongoConnected() ? 'connected' : 'disconnected',
+    database: 'csi_hyderabad',
     timestamp: new Date().toISOString(),
     chapter: 'CSI VFSTR Hyderabad'
   });
@@ -120,7 +128,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server and initialize default admin
+// Start server and initialize default admin & database
 app.listen(PORT, async () => {
   console.log(`=======================================================`);
   console.log(` CSI VFSTR Hyderabad Secure Server running on port ${PORT}`);
@@ -129,8 +137,22 @@ app.listen(PORT, async () => {
   console.log(` API Endpoint: http://localhost:${PORT}/api`);
   console.log(`=======================================================`);
   try {
+    await connectDatabase();
     await initializeDefaultAdmin();
   } catch (err) {
-    console.error('Error seeding default admin:', err);
+    console.error('Error during startup initialization:', err);
   }
 });
+
+// Also bind port 3000 for direct browser access if PORT is 5000
+if (String(PORT) !== '3000') {
+  try {
+    const server3000 = app.listen(3000, () => {
+      console.log(` Web Portal also active on: http://localhost:3000`);
+      console.log(`=======================================================`);
+    });
+    server3000.on('error', (e) => {
+      // Ignore if port 3000 is occupied
+    });
+  } catch (e) {}
+}
