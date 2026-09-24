@@ -28,7 +28,8 @@ export const Events: React.FC = () => {
     'Seminar',
     'Webinar',
     'Technical Event',
-    'Other'
+    'Other',
+    'State level events'
   ];
 
   const statuses = ['All', 'Upcoming', 'Ongoing', 'Completed'];
