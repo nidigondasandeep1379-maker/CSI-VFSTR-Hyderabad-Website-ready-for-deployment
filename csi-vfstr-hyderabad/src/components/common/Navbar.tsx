@@ -22,13 +22,13 @@ export const Navbar: React.FC = () => {
 
   const navLinks = [
     { name: 'Home', path: '/', isBoxed: true },
-    { name: 'About Us', path: '/about' },
-    { name: 'Events', path: '/events' },
+    { name: 'About Us', path: '/about' ,isHighlight: true},
+    { name: 'Events', path: '/events',isHighlight: true },
     { name: 'Gallery', path: '/gallery',isHighlight: true  },
-    { name: 'Team', path: '/team' },
+    { name: 'Team', path: '/team',isHighlight: true },
    
-    { name: 'Magazines', path: '/magazine' },
-    { name: 'Join Us', path: '/membership' },
+    { name: 'Magazines', path: '/magazine',isHighlight: true },
+    { name: 'Join Us', path: '/membership' ,isHighlight: true},
   ];
 
   const isActive = (path: string, name: string) => {
